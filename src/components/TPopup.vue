@@ -66,7 +66,7 @@ export default {
 
 .fade-enter-active,
 .modal-leave-active {
-  transition: opacity .4s;
+  transition: opacity .6s;
 }
 
 .fade-enter,
