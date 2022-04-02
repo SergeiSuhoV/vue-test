@@ -20,7 +20,7 @@ export default {
   },
 
   actions: {
-    // Загрузить пользователей
+    // Загрузить юзера
     loadUsersData ({ commit }) {
       console.log('LOADING')
     },
