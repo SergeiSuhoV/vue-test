@@ -8,4 +8,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+}
+</style>
