@@ -23,77 +23,93 @@
     <div class="t-form-user-add__field">
       <span class="t-form-user-add__caption">Начальник</span>
       <select class="t-form-user-add__select" v-model="formData.parentId">
-        <option v-for="user in parrentList" :value="user.id" :key="user.id">
-          {{ `${user.name} - ${user.phoneNumber}` }}
-        </option>
+          <option v-for="user in parrentList" :value="user.id" :key="user.id">
+            {{ `${user.name} - ${user.phoneNumber}` }}
+          </option>
       </select>
     </div>
     <div class="t-form-user-add__field">
-      <button type="submit" class="t-form-user-add__submit">Сохранить</button>
+      <button
+        :disabled="!isValidSubmit"
+        type="submit"
+        class="t-form-user-add__submit"
+      >
+        Сохранить
+      </button>
     </div>
   </form>
 </template>
 
 <script>
-import {clearStorageData, getStorageData, setStorageData} from '../utils'
+import {
+  clearStorageData,
+  getStorageData,
+  setStorageData
+} from "../utils";
 
 // Название ключа в localStore
-const NAME_STORAGE_FORM_DATA = 'userFormLocalStorage'
+const NAME_STORAGE_FORM_DATA = "userFormLocalStorage";
 
 export default {
-  name: 't-form-user-add',
+  name: "t-form-user-add",
 
   // options для полей
   initForm: {
-    user: '',
-    phoneNumber: '',
-    parentId: ''
+    user: "",
+    phoneNumber: "",
+    parentId: ""
   },
 
   props: {
-    parrentList: {
-      type: Array
-    }
+    parrentList: []
   },
-  data () {
+  data() {
     return {
-      formData: {}
-    }
+      formData: {},
+      isEmptyFields: true
+    };
   },
 
-  created () {
+  created() {
     // инициализируем данные из сторы и пишем в userFormLocalStorage
-    const userFormFieldData = getStorageData(NAME_STORAGE_FORM_DATA)
-    this.formData = { ...this.$options.initForm, ...userFormFieldData }
+    const userFormFieldData = getStorageData(NAME_STORAGE_FORM_DATA);
+    this.formData = { ...this.$options.initForm, ...userFormFieldData };
   },
 
   // отслеживаем изменения полей formData
   watch: {
     formData: {
-      handler () {
+      handler() {
         // сейвим данные формы в userFormLocalStorage
-        setStorageData(NAME_STORAGE_FORM_DATA, this.formData)
+        setStorageData(NAME_STORAGE_FORM_DATA, this.formData);
       },
       deep: true
     }
   },
-
-  methods: {
-    handleResetForm () {
-      this.formData = { ...this.$options.initForm }
-      clearStorageData(NAME_STORAGE_FORM_DATA)
-    },
-    submit () {
-      this.$emit('onSubmit', this.formData)
-      // сброс формы
-      this.handleResetForm()
-    },
-    onClose () {
-      this.$emit('onClose')
+  computed: {
+    isValidSubmit() {
+      return Object.keys(this.formData);
     }
-
+  },
+  methods: {
+    isEmpty(x) {
+      return Object.keys(x).length;
+    },
+    handleResetForm() {
+      this.formData = { ...this.$options.initForm };
+      clearStorageData(NAME_STORAGE_FORM_DATA);
+    },
+    submit() {
+      // Минимальная проверка
+      this.$emit("onSubmit", this.formData);
+      // сброс формы
+      this.handleResetForm();
+    },
+    onClose() {
+      this.$emit("onClose");
+    }
   }
-}
+};
 </script>
 
 <style>

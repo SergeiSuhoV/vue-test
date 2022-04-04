@@ -1,6 +1,6 @@
 # vue-test
 
-> tz
+> Тестовое задание
 
 ## Build Setup
 

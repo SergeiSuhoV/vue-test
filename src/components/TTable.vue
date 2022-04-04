@@ -8,31 +8,35 @@
         </tr>
       </thead>
 
-      <tbody>
+      <tbody v-if="isEmpty(node)">
         <tr class="t-table__tr" v-for="item in node" :key="item.id">
           <td class="t-table__td">{{ item.name }}</td>
           <td class="t-table__td">{{ item.phoneNumber }}</td>
         </tr>
       </tbody>
+      <td v-else>Нет данных для отображения</td>
     </table>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 't-table',
   props: {
     node: {
-      type: Array,
-      required: true
+      type: Array
     }
   },
   data () {
     return {
-      isUpFilterByName: false
+      isUpFilterByName: false,
     }
   },
   methods: {
+    isEmpty  (x) {
+      return Object.keys(x).length
+    },
     toogleFilterByName () {
       // вызов фильтра у родителя + toggle
       this.$emit('onFilterByName', this.isUpFilterByName)

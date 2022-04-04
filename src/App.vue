@@ -7,12 +7,12 @@
         <!-- <t-button >tst</t-button> -->
       </div>
       <!-- Таблица пользователей -->
-      <t-table  :node="getAllUsers" @onFilterByName="handleFilterByName" />
+      <t-table :node="dataForm" @onFilterByName="handleFilterByName" />
       <!-- Попап -->
       <t-popup :isOpen="isPopupOpen" @onClose="closePopup">
         <!-- содержание попапа -->
         <t-form-user-add
-          :parrentList="getAllUsers"
+          :parrentList="dataForm"
           @onClose="closePopup"
           @onSubmit="handleFormUserSubmit"
         ></t-form-user-add>
@@ -22,13 +22,10 @@
 </template>
 
 <script>
-import TButton from './components/TButton.vue'
-import TPopup from './components/TPopup.vue'
-import TTable from './components/TTable.vue'
-import TFormUserAdd from './components/TFormUserAdd.vue'
-
-import { getStorageData } from './utils'
-import { mapGetters, mapActions } from 'vuex'
+import TButton from "./components/TButton.vue";
+import TPopup from "./components/TPopup.vue";
+import TTable from "./components/TTable.vue";
+import TFormUserAdd from "./components/TFormUserAdd.vue";
 
 export default {
   components: {
@@ -36,36 +33,54 @@ export default {
     TButton,
     TTable,
     TFormUserAdd
-
   },
-  mounted () {
-    // Добавляем в хранилище данные из localStore
-    this.addAllUsers(getStorageData('tableData'))
-  },
-  data () {
+  data() {
     return {
-      isPopupOpen: false
-    }
+      isPopupOpen: false,
+      dataForm: []
+    };
+  },
+  mounted() {
+    // Добавляем в хранилище данные из localStore
+    this.setAllData(
+      localStorage.getItem("tableData")
+        ? JSON.parse(localStorage.getItem("tableData"))
+        : []
+    );
   },
   methods: {
-  // Мапим экшены
-    ...mapActions(['addUser', 'addAllUsers']),
-
-    openPopup () {
-      this.isPopupOpen = true
+    openPopup() {
+      this.isPopupOpen = true;
     },
-    closePopup () {
-      this.isPopupOpen = false
+    closePopup() {
+      this.isPopupOpen = false;
     },
-    handleFilterByName (direction) {
-      console.log(direction)
+    handleFilterByName(direction) {
+      console.log(direction);
+      if (direction) {
+      this.dataForm.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      this.dataForm.sort((a, b) => b.name.localeCompare(a.name));
+    }
+    },
+    handleFormUserSubmit(data) {
+      this.dataForm.push(data);
+      localStorage.setItem("tableData", JSON.stringify(this.dataForm));
+      this.closePopup();
+    },
+    setAllData(data) {
+      console.log(data);
+      this.dataForm = data;
     }
   },
   computed: {
+    getAllUsers: () => {
+      return this.dataForm;
+    }
     // Мапим методы из сторы
-    ...mapGetters(['getAllUsers'])
+    // ...mapGetters(['getAllUsers'])
   }
-}
+};
 </script>
 
 <style>
